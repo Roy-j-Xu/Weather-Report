@@ -4,8 +4,8 @@ package io.springboot.weatherreport.weatherreport.controller;
 import io.springboot.weatherreport.weatherreport.entity.City;
 import io.springboot.weatherreport.weatherreport.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -23,9 +23,11 @@ public class CityController {
     }
 
     @GetMapping
-    public ResponseEntity<List<City>> list() {
+    public String list(Model model) {
         List<City> list = service.getAllCity();
-        return ResponseEntity.ok(list);
+
+        model.addAttribute("cities", list);
+        return "index";
     }
 
 }
