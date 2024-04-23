@@ -3,7 +3,10 @@ package io.springboot.weatherreport.weatherreport.service;
 import io.springboot.weatherreport.weatherreport.entity.City;
 import io.springboot.weatherreport.weatherreport.exception.CityNotFoundException;
 import io.springboot.weatherreport.weatherreport.repository.CityRepository;
+import io.springboot.weatherreport.weatherreport.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +21,8 @@ public class CityService {
         this.repository = repository;
     }
 
-    public List<City> getAllCity() {
-        return repository.findAll();
+    public Page<City> getAllCity(int pageNumber) {
+        return repository.findAll(PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
     }
 
     public City getCity(final Integer id) throws CityNotFoundException {

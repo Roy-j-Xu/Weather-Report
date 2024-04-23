@@ -5,11 +5,13 @@ import io.springboot.weatherreport.weatherreport.entity.City;
 import io.springboot.weatherreport.weatherreport.exception.CityNotFoundException;
 import io.springboot.weatherreport.weatherreport.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,10 +29,12 @@ public class CityController {
     }
 
     @GetMapping
-    public String list(Model model) {
-        List<City> list = cityService.getAllCity();
+    public String list(
+            @RequestParam(value = "page", defaultValue = "0") int pageNumber,
+            final Model model) {
+        Page<City> cityPage = cityService.getAllCity(pageNumber);
 
-        model.addAttribute("cities", list);
+        model.addAttribute("cities", cityPage.getContent());
         return "index";
     }
 
