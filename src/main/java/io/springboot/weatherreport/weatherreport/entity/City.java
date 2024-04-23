@@ -1,19 +1,21 @@
 package io.springboot.weatherreport.weatherreport.entity;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.lang.NonNull;
 
 @Entity
 @Data
+@Builder
 @Table(name = "cities", schema = "public")
 public class City {
 
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @Column(name = "city")
@@ -26,10 +28,10 @@ public class City {
     private String stateName;
 
     @Column(name = "lat")
-    private float Lat;
+    private float lat;
 
     @Column(name = "lng")
-    private float Lng;
+    private float lng;
 
     @Column(name = "timezone")
     private String timezone;
