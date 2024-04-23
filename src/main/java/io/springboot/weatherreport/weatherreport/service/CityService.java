@@ -1,12 +1,12 @@
 package io.springboot.weatherreport.weatherreport.service;
 
 import io.springboot.weatherreport.weatherreport.entity.City;
+import io.springboot.weatherreport.weatherreport.exception.CityNotFoundException;
 import io.springboot.weatherreport.weatherreport.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CityService {
@@ -22,8 +22,9 @@ public class CityService {
         return repository.findAll();
     }
 
-    public Optional<City> getCity(final Integer id) {
-        return repository.findById(id);
+    public City getCity(final Integer id) throws CityNotFoundException {
+        return repository.findById(id)
+                .orElseThrow(() -> new CityNotFoundException(id));
     }
 
 }
