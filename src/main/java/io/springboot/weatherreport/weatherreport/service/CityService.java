@@ -9,6 +9,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 
 @Service
 public class CityService {
@@ -16,17 +19,47 @@ public class CityService {
     private final CityRepository repository;
 
     @Autowired
-    public CityService(final CityRepository repository) {
+    public CityService(CityRepository repository) {
         this.repository = repository;
     }
 
-    public Page<City> getAllCity(int pageNumber) {
-        return repository.findAll(PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
+    public List<City> getAllCity(int pageNumber) {
+        return repository.findAll(PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE)).getContent();
     }
 
-    public City getCity(final Integer id) throws CityNotFoundException {
+    public City getCityById(int id) throws CityNotFoundException {
         return repository.findById(id)
                 .orElseThrow(() -> new CityNotFoundException(id));
     }
+
+    public float[] getCityCoordById(int id) throws CityNotFoundException {
+        City city = getCityById(id);
+        return new float[]{city.getLat(), city.getLng()};
+    }
+
+    public List<City> searchCity(String name, String stateId, int pageNumber) {
+        if (name == null && stateId == null) {
+            return getAllCity(pageNumber);
+        }
+        if (name != null && stateId == null) {
+            return repository.findByCity(name, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
+        }
+        if (name == null && stateId != null) {
+            return repository.findByStateId(stateId, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
+        }
+        return repository.findByCityAndStateId(name, stateId);
+    }
+
+//    public List<City> getCityByName(String name, int pageNumber) {
+//        return repository.findByCity(name, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
+//    }
+//
+//    public List<City> getCityByStateId(String stateId, int pageNumber) {
+//        return repository.findByStateId(stateId, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
+//    }
+//
+//    public List<City> getCityByNameAndStateId(String name, String stateId) {
+//        return repository.findByCityAndStateId(name, stateId);
+//    }
 
 }
