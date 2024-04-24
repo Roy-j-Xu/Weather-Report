@@ -7,6 +7,8 @@
 <body>
     <div>
         <table>
+            <th>City</th>
+            <th>State</th>
             <tr th:each="city : ${cities}">
                 <td th:text="${city.city}">City</td>
                 <td th:text="${city.stateName}">State</td>

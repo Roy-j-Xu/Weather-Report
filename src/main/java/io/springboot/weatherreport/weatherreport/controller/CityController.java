@@ -44,7 +44,10 @@ public class CityController {
             @RequestParam(value = "page", defaultValue = "0") int pageNumber,
             final Model model
     ) {
-        String cityName = cityNameWithUnderscore.replace("_", " ");
+        String cityName = null;
+        if (cityNameWithUnderscore != null) {
+            cityName = cityNameWithUnderscore.replace("_", " ");
+        }
         List<City> cities = cityService.searchCity(cityName, stateId, pageNumber);
         model.addAttribute("cities", cities);
         return "index";
