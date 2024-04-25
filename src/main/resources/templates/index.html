@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Weather Report</title>
+    <script src="http://localhost:35729/livereload.js"></script>
 </head>
 <body>
     <div>
@@ -10,7 +11,7 @@
             <th>City</th>
             <th>State</th>
             <tr th:each="city : ${cities}">
-                <td th:text="${city.city}">City</td>
+                <td><a th:text="${city.city}" th:href="@{'/cities/' + ${city.id}}"/></td>
                 <td th:text="${city.stateName}">State</td>
             </tr>
         </table>

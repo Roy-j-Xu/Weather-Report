@@ -53,10 +53,12 @@ public class CityController {
         return "index";
     }
 
-    @GetMapping("/{cityName},{stateId},{id}")
-    public String getCityById(@PathVariable int id, Model model) {
+    @GetMapping("/{cityName},{stateId},{idString}")
+    public String getCityByFullData(@PathVariable String idString, Model model) {
         City city;
         try {
+            System.out.println(idString);
+            int id = Integer.parseInt(idString);
             city = cityService.getCityById(id);
         } catch (CityNotFoundException exception) {
             model.addAttribute("error", exception.getMessage());
@@ -66,11 +68,9 @@ public class CityController {
         return "city/city";
     }
 
-//    @GetMapping("/{cityNameWithUnderscore},{stateId}")
-//    public String getCity(
-//            @PathVariable String cityNameWithUnderscore,
-//            @PathVariable String stateId) {
-//        String city_name = cityNameWithUnderscore.replace("_", " ");
-//    }
+    @GetMapping("/{idString}")
+    public String getCityById(@PathVariable String idString, Model model) {
+        return getCityByFullData(idString, model);
+    }
 
 }
