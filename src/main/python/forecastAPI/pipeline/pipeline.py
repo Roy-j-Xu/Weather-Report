@@ -49,7 +49,7 @@ def _parse_time(data: pd.DataFrame, column: str):
     return parsed_data
 
 def forecast_pipeline(json: dict) -> pd.DataFrame:
-    '''Process forecast data'''
+    '''Process forecast data.'''
     df = _raw_forcast_dataframe(json)
 
     # Change Fahrenheit to Celsius
@@ -68,5 +68,12 @@ def forecast_pipeline(json: dict) -> pd.DataFrame:
         'icon'
         ],
         inplace=True)
+
+    df.rename(columns={
+        'dewpoint.value': 'dewpoint',
+        'relativeHumidity.value': 'relativeHumidity',
+        'probabilityOfPrecipitation.value': 'probabilityOfPrecipitation'
+    },
+    inplace=True)
 
     return df

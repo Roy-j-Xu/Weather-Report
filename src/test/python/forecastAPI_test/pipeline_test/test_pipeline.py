@@ -4,8 +4,8 @@ import os
 
 import pandas.testing
 
-import pipeline
-import pipeline.pipeline
+from forecastAPI import pipeline
+from forecastAPI.pipeline import pipeline
 
 class TestPipeline(unittest.TestCase):
 
@@ -15,7 +15,7 @@ class TestPipeline(unittest.TestCase):
             self.test_json = json.load(f)
 
     def test_forecast_raw_dataframe(self):
-        df = pipeline.pipeline._raw_forcast_dataframe(self.test_json)
+        df = pipeline._raw_forcast_dataframe(self.test_json)
         self.assertEqual(df.shape, (14, 19), msg='Shape of raw forecast dataframe incorrect.')
 
 

@@ -1,6 +1,8 @@
 import requests
+import json
+from flask import jsonify
 
-import pipeline
+from forecastAPI import pipeline
 
 API = "https://api.weather.gov"
 
@@ -11,19 +13,32 @@ def _point_meta_request(lat: float, lng: float) -> dict:
     point_request = requests.get(url)
 
     if point_request.status_code == 404:
-        raise requests.RequestException('Data Unavailable For Requested Point')
+        raise requests.RequestException('Data unavailable for requested point.')
 
     return pipeline._process_point_metadata(point_request.json())
 
-def weather_request(lat: float, lng: float, data:str='forecast') -> dict:
+
+def forecast_request(lat: float, lng: float, data_type:str='forecast') -> dict:
     '''Retrieve weather data about a given point.
 
     Args:
         lat (float): Latitude
         lng (float): Longitude
-        data (str): Type of data, can be either 'forecast', 'forecastHourly' 
+        data_type (str): Type of data, can be either 'forecast', 'forecastHourly' 
             or 'forecastGridData'.
+
+    Returns:
+        data (DataFrame): Processed data of requested type.
     '''
-    url = _point_meta_request(lat, lng)[data]
+    url = _point_meta_request(lat, lng)[data_type]
+
+    if url is None:
+        raise requests.RequestException('Data unavailable for requested point.')
+
     w_request = requests.get(url)
-    return w_request.json()
+    if w_request.status_code == 404:
+        raise requests.RequestException('Data unavailable for requested point.')
+
+    data = pipeline.forecast_pipeline(w_request.json()).to_dict(orient='records')
+
+    return json.dumps(data, sort_keys = True, indent = 4, separators = (',', ': '))
