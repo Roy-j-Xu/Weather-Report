@@ -39,6 +39,6 @@ def forecast_request(lat: float, lng: float, data_type:str='forecast') -> dict:
     if w_request.status_code == 404:
         raise requests.RequestException('Data unavailable for requested point.')
 
-    data = pipeline.forecast_pipeline(w_request.json()).to_dict(orient='records')
+    data = pipeline.forecast_pipeline(w_request.json()).to_json()
 
-    return json.dumps(data, sort_keys = True, indent = 4, separators = (',', ': '))
+    return data

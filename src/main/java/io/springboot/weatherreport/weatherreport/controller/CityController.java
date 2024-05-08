@@ -5,18 +5,13 @@ import io.springboot.weatherreport.weatherreport.entity.City;
 import io.springboot.weatherreport.weatherreport.exception.CityNotFoundException;
 import io.springboot.weatherreport.weatherreport.service.CityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-@Controller
-@RequestMapping("/cities")
+@RestController
+@RequestMapping("api/cities")
 public class CityController {
 
     private final CityService cityService;
@@ -27,50 +22,34 @@ public class CityController {
     }
 
     @GetMapping
-    public String list(
-            @RequestParam(value = "page", defaultValue = "0") int pageNumber,
-            final Model model
+    public List<City> list(
+            @RequestParam(value = "page", defaultValue = "0") int pageNumber
     ) {
-        List<City> cityPage = cityService.getAllCity(pageNumber);
-
-        model.addAttribute("cities", cityPage);
-        return "index";
+        return cityService.getAllCity(pageNumber);
     }
 
     @GetMapping("/search")
-    public String searchCity(
+    public List<City> searchCity(
             @RequestParam(value = "name",  required = false) String cityNameWithUnderscore,
             @RequestParam(value = "state", required = false) String stateId,
-            @RequestParam(value = "page", defaultValue = "0") int pageNumber,
-            final Model model
+            @RequestParam(value = "page", defaultValue = "0") int pageNumber
     ) {
         String cityName = null;
         if (cityNameWithUnderscore != null) {
             cityName = cityNameWithUnderscore.replace("_", " ");
         }
-        List<City> cities = cityService.searchCity(cityName, stateId, pageNumber);
-        model.addAttribute("cities", cities);
-        return "index";
+        return cityService.searchCity(cityName, stateId, pageNumber);
     }
 
     @GetMapping("/{cityName},{stateId},{idString}")
-    public String getCityByFullData(@PathVariable String idString, Model model) {
-        City city;
-        try {
-            System.out.println(idString);
-            int id = Integer.parseInt(idString);
-            city = cityService.getCityById(id);
-        } catch (CityNotFoundException exception) {
-            model.addAttribute("error", exception.getMessage());
-            return "city/city-not-found";
-        }
-        model.addAttribute("city", city);
-        return "city/city";
+    public City getCityByFullData(@PathVariable String idString) throws CityNotFoundException {
+        int id = Integer.parseInt(idString);
+        return cityService.getCityById(id);
     }
 
     @GetMapping("/{idString}")
-    public String getCityById(@PathVariable String idString, Model model) {
-        return getCityByFullData(idString, model);
+    public City getCityById(@PathVariable String idString) {
+        return getCityByFullData(idString);
     }
 
 }
