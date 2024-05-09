@@ -33,5 +33,9 @@ build/
 .vscode/
 
 ### Python ###
-/venv
-*__pycache__/
+/venv/
+**/__pycache__/
+
+### JavaScript ###
+/node_modules/
+.parcel-cache

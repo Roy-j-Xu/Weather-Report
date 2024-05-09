@@ -1,0 +1,10 @@
+{
+  "name": "weather-report",
+  "scripts": {
+    "start": "parcel src/main/typescript/html/**/*.html",
+    "build": "parcel build src/main/typescript/html/**/*.html --dist-dir src/main/resources/static"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}
