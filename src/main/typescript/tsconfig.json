@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "downlevelIteration": true,
+    "module": "CommonJS",
+    "outDir": "out",
+    "sourceMap": true,
+    "lib": ["es2017", "DOM"]
+  },
+}
