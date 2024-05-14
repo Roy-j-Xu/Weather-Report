@@ -1,0 +1,9 @@
+
+tr.city-data:hover td {
+    background-color: rgb(217, 217, 243) !important;
+}
+
+tr.city-header td{
+    background-color: rgb(222, 222, 222);
+    font-weight: 600;
+}

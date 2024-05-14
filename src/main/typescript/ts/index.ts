@@ -1,5 +1,10 @@
-import { CityTable } from "./concrete_tables";
+import { CityTable, CityPageButtons } from "./components/city_table";
 
-let cityTable = new CityTable();
+const param = new URLSearchParams(window.location.search);
+const page = Number(param.get("page"));
+
+let cityTable = new CityTable(page);
+let pageButtons = new CityPageButtons(cityTable);
 
 document.body.appendChild(cityTable.getElement());
+document.body.appendChild(pageButtons.getElement());

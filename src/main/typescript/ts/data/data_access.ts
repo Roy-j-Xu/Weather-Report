@@ -17,8 +17,8 @@ async function fetchCities(page: number): Promise<City[]> {
     return cities;
 }
 
-async function fetchForecast(lat: number, lng: number): Promise<Forecast[]> {
-    const response = await fetch(`${FORECAST_API}/${lat},${lng}`);
+async function fetchForecast(lat: number, lng: number, abortController?: AbortController): Promise<Forecast[]> {
+    const response = await fetch(`${FORECAST_API}/${lat},${lng}`, { signal: abortController.signal });
     const forecast = response.json().then(json => json as Forecast[]);
     return forecast;
 }
