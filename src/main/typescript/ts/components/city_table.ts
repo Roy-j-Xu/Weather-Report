@@ -1,8 +1,9 @@
 import { Table } from "./abstract_components";
-import { fetchCities, fetchForecast } from "../data_access";
-import { City, Forecast } from "../entities";
-import { Component, CompositeComponent } from "./patterns";
-import { appendNewElement, newElement } from "../util";
+import { fetchCities, fetchForecast } from "../data/data_access";
+import { City, Forecast } from "../data/entities";
+import { Component } from "./patterns";
+import { appendNewElement, newElement, setUrlParam } from "../utils/commons";
+import { cacheForecastData, getStoredForecastData } from "../utils/caching";
 
 const CITY_HEADERS = [
     {"header": "City", "variable": "city"},
@@ -108,8 +109,14 @@ class CityTable extends Table {
             this.addSubcomponent(tableRow);
             
             tableRow.setCityData(city);
-            const forecast = await fetchForecast(city.lat, city.lng, this.abortController);
-            tableRow.setWeatherData(forecast); 
+
+            if (getStoredForecastData(city.id)) {
+                tableRow.setWeatherData(getStoredForecastData(city.id));
+            } else {
+                const forecast = await fetchForecast(city.lat, city.lng, this.abortController);
+                tableRow.setWeatherData(forecast);
+                cacheForecastData(city, forecast);
+            }
         });
         
         await Promise.all(createColumnPromises);
@@ -143,29 +150,40 @@ class CityPageButtons extends Component {
     protected element: HTMLElement;
     private table: CityTable;
 
-    constructor(table: CityTable) {
+    private page: number;
+    private pageButtons: HTMLElement[] = [];
+
+    constructor(table: CityTable, page?: number) {
         super();
         this.table = table;
+        this.page = (page) ? page : 0;
         this.createPageButtonElement();
     }
 
     private createPageButtonElement(): void {
-        this.element = newElement("div");
+        this.element = newElement("div", "container");
         for (let i = 0; i < 6; i++) {
-            const btn = newElement("button", "btn btn-light", String(i));
-            btn.addEventListener("click", () => {
+            this.pageButtons[i] = newElement("button", "btn btn-light", String(i));
+            this.pageButtons[i].addEventListener("click", () => {
                 this.table.setPage(i);
-                const urlParams = new URLSearchParams(window.location.search);
-                urlParams.set("page", String(i));
-                window.location.search = urlParams.toString();
+                setUrlParam("page", i);
             });
-            this.element.append(btn);
+            this.element.append(this.pageButtons[i]);
         }
     }
 
 }
 
+function createCityTableSet(): [CityTable, CityPageButtons] {
+    const param = new URLSearchParams(window.location.search);
+    const page = Number(param.get("page"));
+
+    let cityTable = new CityTable(page);
+    let pageButtons = new CityPageButtons(cityTable, page);
+
+    return [cityTable, pageButtons];
+}
 
 
 
-export { CityTable, CityPageButtons };
+export { createCityTableSet };

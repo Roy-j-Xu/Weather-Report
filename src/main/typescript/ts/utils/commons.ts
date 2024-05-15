@@ -10,4 +10,11 @@ function appendNewElement(target: HTMLElement, element: [string, string?, string
     target.appendChild(newElement(element[0], element[1], element[2]));
 }
 
-export { newElement, appendNewElement };
+function setUrlParam(param: string, value: string | number): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set(param, String(value));
+    window.location.search = urlParams.toString();
+}
+
+
+export { newElement, appendNewElement, setUrlParam };

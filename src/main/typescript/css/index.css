@@ -1,9 +1,16 @@
 
 tr.city-data:hover td {
     background-color: rgb(217, 217, 243) !important;
+    transition: 100ms;
 }
 
 tr.city-header td{
+    position: sticky;
+    top: 0;
     background-color: rgb(222, 222, 222);
     font-weight: 600;
+}
+
+.btn {
+    margin: 2px;
 }
