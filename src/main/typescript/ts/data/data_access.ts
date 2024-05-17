@@ -4,17 +4,29 @@ const CITY_API = "http://localhost:8080/api/cities";
 const FORECAST_API = "http://localhost:5000/forecast";
 
 const prepareUrl = (api: string, params: Record<string, string>) => {
-    return `${api}?${new URLSearchParams(params)}`;
+    let urlParams = new URLSearchParams(params);
+    let emptyParams = [];
+    urlParams.forEach((value, key) => {
+        if (value === "") {
+            emptyParams.push(key);
+        }
+    })
+    emptyParams.forEach(key => urlParams.delete(key));
+
+    console.log(`${api}?${urlParams}`)
+
+    return `${api}?${urlParams}`;
 }
 
-async function fetchCities(page: number): Promise<City[]> {
+async function fetchCities(params: Record<string, string>): Promise<City[]> {
 
-    const response = await fetch(
-        prepareUrl(CITY_API, {'page': `${page}`})
-    );
-    const cities = response.json().then(json => json as City[]);
-
-    return cities;
+    try {
+        const response = await fetch(prepareUrl(CITY_API, params));
+        const cities = response.json().then(json => json as City[]);
+        return cities;
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 async function fetchForecast(lat: number, lng: number, abortController?: AbortController): Promise<Forecast[]> {

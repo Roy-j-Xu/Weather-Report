@@ -6,8 +6,8 @@ function cacheForecastData(city: City, forecast: Forecast[]): void {
     sessionStorage.setItem(`city-${city.id}`, JSON.stringify(forecast));
 }
 
-function getStoredForecastData(id: number): Forecast[] | null {
-    let data = sessionStorage.getItem(`city-${id}`);
+function getStoredForecastData(city: City): Forecast[] | null {
+    let data = sessionStorage.getItem(`city-${city.id}`);
     if (data) {
         return JSON.parse(data) as Forecast[];
     }

@@ -1,7 +1,11 @@
 
 tr.city-data:hover td {
     background-color: rgb(217, 217, 243) !important;
-    transition: 100ms;
+    transition: 200ms;
+}
+
+tr.city-data td {
+    transition: 200ms;
 }
 
 tr.city-header td{

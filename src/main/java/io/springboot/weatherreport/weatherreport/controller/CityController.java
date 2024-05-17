@@ -22,14 +22,14 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @GetMapping
-    public List<City> list(
-            @RequestParam(value = "page", defaultValue = "0") int pageNumber
-    ) {
-        return cityService.getAllCity(pageNumber);
-    }
+//    @GetMapping
+//    public List<City> list(
+//            @RequestParam(value = "page", defaultValue = "1") int pageNumber
+//    ) {
+//        return cityService.getAllCity(pageNumber);
+//    }
 
-    @GetMapping("/search")
+    @GetMapping
     public List<City> searchCity(
             @RequestParam(value = "name",  required = false) String cityNameWithUnderscore,
             @RequestParam(value = "state", required = false) String stateId,

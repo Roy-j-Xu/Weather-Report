@@ -1,4 +1,4 @@
-import { createCityTableSet } from "./components/city_table";
+import { createCityTableSet } from "./components/city_table/city_table_factory";
 
 
 let [cityTable, pageButtons] = createCityTableSet();
