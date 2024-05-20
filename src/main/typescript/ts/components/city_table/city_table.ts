@@ -4,14 +4,20 @@ import { Component, CompositeComponent } from "../patterns";
 import { appendNewElement, newElement } from "../../utils/commons";
 import { CityRepository, ForecastRepository } from "../../data/repositories";
 
-const CITY_HEADERS = [
-    {"header": "City", "variable": "city"},
-    {"header": "State", "variable": "stateName"},
+interface Header<Data> {
+    header: string,
+    key: keyof Data
+}
+
+
+const CITY_HEADERS: Header<City>[] = [
+    {"header": "City", "key": "city"},
+    {"header": "State", "key": "stateName"},
 ];
 
-const WEATHER_HEADERS = [
-    {"header": "Temperature", "variable": "temperature"},
-    {"header": "Probability of Rain", "variable": "probabilityOfPrecipitation"},
+const WEATHER_HEADERS: Header<Forecast>[] = [
+    {"header": "Temperature", "key": "temperature"},
+    {"header": "Probability of Rain", "key": "probabilityOfPrecipitation"},
 ];
 
 
@@ -38,11 +44,11 @@ class CityTableRow extends Component {
 
     public async setCityData(data: City): Promise<void> {
         this.city = data;
-        for (let i = 0; i < CITY_HEADERS.length; i++) {
-            let currentChild = this.element.children[i];
-            let currentData = this.city[CITY_HEADERS[i].variable];
-            currentChild.textContent = currentData;
-        }
+        CITY_HEADERS.forEach((header, index) => {
+            let currentChild = this.element.children[index];
+            let currentData = this.city[header.key];
+            currentChild.textContent = currentData.toString();
+        });
         this.loadForecastData();
     }
 
@@ -52,17 +58,13 @@ class CityTableRow extends Component {
         }
         try {
             let forecast = await this.forecastRepository.getForecastByCity(this.city);
-
-            for (let i = 0; i < WEATHER_HEADERS.length; i++) {
-                let currentChild = this.element.children[CITY_HEADERS.length + i];
-                let currentData = forecast[WEATHER_HEADERS[i].variable][0];
-                if (!currentData) currentData = "-";
-                currentChild.textContent = currentData;
-            }
+            WEATHER_HEADERS.forEach((header, index) => {
+                let currentChild = this.element.children[CITY_HEADERS.length + index];
+                let currentData = forecast[header.key][0];
+                currentChild.textContent = (currentData === null) ? "-" : currentData.toString();
+            });
         } catch (error) {
-            if (error instanceof DOMException) {
-                return;
-            }
+            if (error instanceof DOMException) return;
 
             for (let i = 0; i < WEATHER_HEADERS.length; i++) {
                 let currentChild = this.element.children[CITY_HEADERS.length + i];
@@ -83,9 +85,11 @@ class CityTable extends CompositeComponent {
     private cityRepository: CityRepository;
     private forecastRepository: ForecastRepository;
 
-    private name = "";
-    private state = "";
-    private page = 0;
+    private params = {
+        "name": "",
+        "state": "",
+        "page": "0",
+    }
     
     constructor(cityRepository: CityRepository, forecastRepository: ForecastRepository) {
         super();
@@ -93,41 +97,37 @@ class CityTable extends CompositeComponent {
         this.forecastRepository = forecastRepository;
 
         this.createTableElement();
-        console.log("New table created");
-        setTimeout(this.showData, 1000);
     }
     
     private createTableElement(): void {
         this.element = newElement("div", "container");
-        const mainTable = newElement("table", "table");
-        const headers = newElement("thead");
-        const headerRow = newElement("tr", "city-header");
+        const mainTable = appendNewElement(this.element, ["table", "table"]);
+        const headers = appendNewElement(mainTable, ["thead"]);
+        this.tableBody = appendNewElement(mainTable, ["tbody"]);
+        const headerRow = appendNewElement(headers, ["tr", "city-header"]);
         
-        this.tableBody = newElement("tbody");
+        CITY_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
         
-        CITY_HEADERS.forEach(h => appendNewElement(headerRow, ["td", null, h.header]));
-        
-        WEATHER_HEADERS.forEach(h => appendNewElement(headerRow, ["td", null, h.header]));
-        
-        headers.appendChild(headerRow);
-        mainTable.appendChild(headers);
-        mainTable.appendChild(this.tableBody);
-        this.element.appendChild(mainTable);
+        WEATHER_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
     }
-    
+ 
     public async showData(): Promise<void> {
-        this.clear();
-        const cities = await this.cityRepository.searchCity(this.name, this.state, this.page);
+        this.forecastRepository.abortAllRequests();
+        let cities: City[];
+
+        try {
+            cities = await this.cityRepository.searchCity(this.params);
+        } catch (error) {
+            console.log(error);
+            appendNewElement(this.element, ["div", "error", "Unable to get data."]);
+            return;
+        }
 
         const rowCount = this.subcomponents.length;
-
         for (let i = rowCount; i < cities.length; i++) {
             this.addSubcomponent(new CityTableRow(this.forecastRepository));
         }
-
-        for (let i = cities.length; i < rowCount; i++) {
-            this.removeSubcomponent(this.subcomponents[i]);
-        }
+        this.removeSubcomponentAfterIndex(cities.length);
 
         const updateCityRowPromises = cities.map(async (city, index) => {
             let tableRow = this.subcomponents[index] as CityTableRow;
@@ -136,32 +136,30 @@ class CityTable extends CompositeComponent {
         
         await Promise.all(updateCityRowPromises);
     }
-
-    public clear(): void {
-        this.forecastRepository.abortAllRequests();
-        super.clear();
-    }
     
     protected addSubcomponent(component: Component): void {
         super.addSubcomponent(component);
         this.tableBody.append(component.getElement());
     }
 
-    protected removeSubcomponent(component: Component): void {
-        super.removeSubcomponent(component);
-        this.tableBody.removeChild(component.getElement());
+    private removeSubcomponentAfterIndex(index: number): void {
+        if (index >= this.tableBody.children.length) return;
+        this.subcomponents = this.subcomponents.slice(0, index);
+        while (index < this.tableBody.children.length) {
+            this.tableBody.removeChild(this.tableBody.children[index]);
+        }
     }
 
     public setPage(page: number): void {
-        this.page = page;
+        this.params.page = String(page);
     }
 
     public setName(name: string): void {
-        this.name = (name === null) ? "" : name;
+        this.params.name = (name === null) ? "" : name;
     }
 
     public setState(state: string): void {
-        this.state = (state === null) ? "" : state;
+        this.params.state = (state === null) ? "" : state;
     }
     
 }

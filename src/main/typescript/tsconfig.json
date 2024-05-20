@@ -4,7 +4,10 @@
     "downlevelIteration": true,
     "module": "CommonJS",
     "outDir": "out",
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "resolveJsonModule": true,
     "sourceMap": true,
-    "lib": ["es2016", "DOM"]
+    "lib": ["es2017", "DOM"]
   },
 }

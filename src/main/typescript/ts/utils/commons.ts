@@ -6,8 +6,10 @@ function newElement(tagName: string, className?: string, textContent?: string): 
     return element;
 }
 
-function appendNewElement(target: HTMLElement, element: [string, string?, string?]): void {
-    target.appendChild(newElement(element[0], element[1], element[2]));
+function appendNewElement(target: HTMLElement, element: [string, string?, string?]): HTMLElement {
+    const newChild = newElement(element[0], element[1], element[2]);
+    target.appendChild(newChild);
+    return newChild;
 }
 
 function setUrlParam(param: string, value: string | number): void {

@@ -1,8 +1,8 @@
 import { CityRepository, ForecastRepository } from "../../data/repositories";
 import { CityTable } from "./city_table";
-import { CityPageButtons } from "./side_components";
+import { CityPageButtons, CitySearchBar } from "./side_components";
 
-function createCityTableSet(): [CityTable, CityPageButtons] {
+function createCityTableSet(): [CityTable, CityPageButtons, CitySearchBar] {
 
     
     const cityRepository = new CityRepository();
@@ -11,10 +11,11 @@ function createCityTableSet(): [CityTable, CityPageButtons] {
 
     let cityTable = new CityTable(cityRepository, forecastRepository);
     let pageButtons = new CityPageButtons(cityTable);
+    let searchBar = new CitySearchBar(cityTable);
 
     cityTable.showData();
 
-    return [cityTable, pageButtons];
+    return [cityTable, pageButtons, searchBar];
 }
 
 

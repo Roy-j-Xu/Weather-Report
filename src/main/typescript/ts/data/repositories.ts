@@ -9,15 +9,7 @@ class CityRepository {
         return await fetchCities({"page": `${page}`});
     }
 
-    public async searchCity(name: string, state: string, page: number): Promise<City[]> {
-        let params = {
-            "name": name,
-            "state": state,
-            "page": `${page}`,
-        }
-        console.log("searchCity called");
-        const data = await fetchCities(params);
-        console.table(data);
+    public async searchCity(params: Record<string, string>): Promise<City[]> {
         return await fetchCities(params);
     }
 
@@ -27,7 +19,7 @@ class ForecastRepository {
 
     private abortController = new AbortController();
 
-    public async getForecastByCity(city: City): Promise<Forecast[]> {
+    public async getForecastByCity(city: City): Promise<Forecast> {
         const storedData = getStoredForecastData(city)
         if (storedData) {
             return storedData;
