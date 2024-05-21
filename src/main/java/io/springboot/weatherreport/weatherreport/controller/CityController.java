@@ -11,8 +11,8 @@ import java.util.List;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:1234")
 @RequestMapping("api/cities")
+@CrossOrigin(origins = "http://localhost:1234")
 public class CityController {
 
     private final CityService cityService;
@@ -21,13 +21,6 @@ public class CityController {
     public CityController(final CityService cityService) {
         this.cityService = cityService;
     }
-
-//    @GetMapping
-//    public List<City> list(
-//            @RequestParam(value = "page", defaultValue = "1") int pageNumber
-//    ) {
-//        return cityService.getAllCity(pageNumber);
-//    }
 
     @GetMapping
     public List<City> searchCity(
@@ -42,15 +35,15 @@ public class CityController {
         return cityService.searchCity(cityName, stateId, pageNumber);
     }
 
-    @GetMapping("/{cityName},{stateId},{idString}")
+    @GetMapping("/{idString}")
     public City getCityByFullData(@PathVariable String idString) throws CityNotFoundException {
         int id = Integer.parseInt(idString);
         return cityService.getCityById(id);
     }
 
-    @GetMapping("/{idString}")
-    public City getCityById(@PathVariable String idString) {
-        return getCityByFullData(idString);
+    @GetMapping("/suggestions/{input}")
+    public List<String> getCitySuggestions(@PathVariable String input) {
+        return cityService.getCitySuggestions(input);
     }
 
 }

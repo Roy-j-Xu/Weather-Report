@@ -22,10 +22,15 @@ async function fetchCities(params: Record<string, string>): Promise<City[]> {
     return cities;
 }
 
+async function fetchCitySuggestions(input: string): Promise<string[]> {
+    const response = await fetch(`${CITY_API}/suggestions/${input}`);
+    return await response.json();
+}
+
 async function fetchForecast(lat: number, lng: number, abortController: AbortController): Promise<Forecast> {
     const response = await fetch(`${FORECAST_API}/${lat},${lng}`, { signal: abortController.signal });
     const forecast = response.json().then(json => json as Forecast);
     return forecast;
 }
 
-export { fetchCities, fetchForecast };
+export { fetchCities, fetchCitySuggestions, fetchForecast };

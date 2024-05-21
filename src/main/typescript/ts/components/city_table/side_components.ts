@@ -1,6 +1,7 @@
 import { appendNewElement, newElement } from "../../utils/commons";
 import { Component } from "../patterns";
 import { CityTable } from "./city_table";
+import { CityRepository } from "../../data/repositories";
 
 import * as stateNames from "../../../resources/states.json"
 
@@ -8,13 +9,18 @@ import * as stateNames from "../../../resources/states.json"
 class CitySearchBar extends Component {
     protected element: HTMLElement;
     private inputElement: HTMLElement;
+    private suggestionList: HTMLElement;
+
+    private cityRepository: CityRepository;
 
     private cityTable: CityTable;
 
+
     private state: string = "";
 
-    constructor(table: CityTable) {
+    constructor(cityRepository: CityRepository, table: CityTable) {
         super();
+        this.cityRepository = cityRepository;
         this.cityTable = table;
         this.createSearchBarElement();
     }
@@ -45,8 +51,15 @@ class CitySearchBar extends Component {
 
     private createInputElement(row: HTMLElement): void {
         const div = appendNewElement(row, ["div", "col-sm-5"]);
-        this.inputElement = appendNewElement(div, ["input", "form-control"]);
+        this.inputElement = appendNewElement(div, ["input", "form-control dropdown"]);
+        this.suggestionList = appendNewElement(div, ["datalist"]);
+
         this.inputElement.setAttribute("type", "text");
+        this.inputElement.setAttribute("placeholder", "Enter city");
+        this.inputElement.setAttribute("list", "city-suggestion-list");
+        this.inputElement.addEventListener("keyup", () => this.updateSuggestionList());
+
+        this.suggestionList.setAttribute("id", "city-suggestion-list");
 
         const searchBtn = appendNewElement(row, ["button", "btn btn-primary col-sm-1", "Search"]);
         searchBtn.setAttribute("type", "button");
@@ -55,6 +68,13 @@ class CitySearchBar extends Component {
             this.cityTable.setState(this.state);
             this.cityTable.showData();
         });
+    }
+
+    private async updateSuggestionList(): Promise<void> {
+        this.suggestionList.innerHTML = "";
+        const suggestions = await this.cityRepository.getSuggestions(this.getInputValue());
+        console.log(suggestions);
+        suggestions.forEach(s => appendNewElement(this.suggestionList, ["option", undefined, s]));
     }
 
     private getInputValue(): string {

@@ -1,4 +1,4 @@
-import { fetchCities, fetchForecast } from "./data_access";
+import { fetchCities, fetchCitySuggestions, fetchForecast } from "./data_access";
 import { City, Forecast } from "./entities";
 import { cacheForecastData, getStoredForecastData } from "../utils/caching";
 
@@ -11,6 +11,10 @@ class CityRepository {
 
     public async searchCity(params: Record<string, string>): Promise<City[]> {
         return await fetchCities(params);
+    }
+
+    public async getSuggestions(input: string): Promise<string[]> {
+        return await fetchCitySuggestions(input);
     }
 
 }

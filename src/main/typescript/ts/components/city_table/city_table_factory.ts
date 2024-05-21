@@ -11,7 +11,7 @@ function createCityTableSet(): [CityTable, CityPageButtons, CitySearchBar] {
 
     let cityTable = new CityTable(cityRepository, forecastRepository);
     let pageButtons = new CityPageButtons(cityTable);
-    let searchBar = new CitySearchBar(cityTable);
+    let searchBar = new CitySearchBar(cityRepository, cityTable);
 
     cityTable.showData();
 

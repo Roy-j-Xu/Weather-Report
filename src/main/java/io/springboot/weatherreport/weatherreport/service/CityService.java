@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -31,11 +32,11 @@ public class CityService {
         return repository.findById(id)
                 .orElseThrow(() -> new CityNotFoundException(id));
     }
-
-    public float[] getCityCoordById(int id) throws CityNotFoundException {
-        City city = getCityById(id);
-        return new float[]{city.getLat(), city.getLng()};
-    }
+//
+//    public float[] getCityCoordById(int id) throws CityNotFoundException {
+//        City city = getCityById(id);
+//        return new float[]{city.getLat(), city.getLng()};
+//    }
 
     public List<City> searchCity(String name, String stateId, int pageNumber) {
         if (name == null && stateId == null) {
@@ -50,16 +51,9 @@ public class CityService {
         return repository.findByCityAndStateId(name, stateId);
     }
 
-//    public List<City> getCityByName(String name, int pageNumber) {
-//        return repository.findByCity(name, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
-//    }
-//
-//    public List<City> getCityByStateId(String stateId, int pageNumber) {
-//        return repository.findByStateId(stateId, PageRequest.of(pageNumber, Constants.CITY_PAGE_SIZE));
-//    }
-//
-//    public List<City> getCityByNameAndStateId(String name, String stateId) {
-//        return repository.findByCityAndStateId(name, stateId);
-//    }
+    public List<String> getCitySuggestions(String input) {
+//        if (repository.checkIfCityExist(input)) return List.of(input);
+        return repository.findSimilarCityNames(input);
+    }
 
 }
