@@ -1,7 +1,7 @@
 abstract class Component {
     protected element: HTMLElement;
 
-    public clear(): void { }
+    public animate(type?: string): void { }
 
     public getElement(): HTMLElement {
         return this.element;
@@ -12,8 +12,8 @@ abstract class CompositeComponent extends Component {
     
     protected subcomponents: Component[] = [];
 
-    public clear(): void {
-        this.subcomponents.forEach(c => c.clear());
+    public animate(type?: string): void {
+        this.subcomponents.forEach(c => c.animate(type));
     }
 
     protected addSubcomponent(component: Component): void {
@@ -22,7 +22,6 @@ abstract class CompositeComponent extends Component {
     }
 
     protected removeAllSubcomponents(): void {
-        this.subcomponents.forEach(c => c.clear());
         this.subcomponents = [];
     }
 

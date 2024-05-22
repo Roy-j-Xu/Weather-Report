@@ -4,10 +4,8 @@ import { CityPageButtons, CitySearchBar } from "./side_components";
 
 function createCityTableSet(): [CityTable, CityPageButtons, CitySearchBar] {
 
-    
     const cityRepository = new CityRepository();
     const forecastRepository = new ForecastRepository();
-    
 
     let cityTable = new CityTable(cityRepository, forecastRepository);
     let pageButtons = new CityPageButtons(cityTable);

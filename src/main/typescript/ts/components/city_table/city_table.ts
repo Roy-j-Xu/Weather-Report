@@ -1,7 +1,7 @@
 
 import { City, Forecast } from "../../data/entities";
 import { Component, CompositeComponent } from "../patterns";
-import { appendNewElement, newElement } from "../../utils/commons";
+import { appendNewElement, getElementById, newElement } from "../../utils/commons";
 import { CityRepository, ForecastRepository } from "../../data/repositories";
 
 interface Header<Data> {
@@ -95,22 +95,10 @@ class CityTable extends CompositeComponent {
         super();
         this.cityRepository = cityRepository;
         this.forecastRepository = forecastRepository;
-
+        
         this.createTableElement();
     }
     
-    private createTableElement(): void {
-        this.element = newElement("div", "container");
-        const mainTable = appendNewElement(this.element, ["table", "table"]);
-        const headers = appendNewElement(mainTable, ["thead"]);
-        this.tableBody = appendNewElement(mainTable, ["tbody"]);
-        const headerRow = appendNewElement(headers, ["tr", "city-header"]);
-        
-        CITY_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
-        
-        WEATHER_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
-    }
- 
     public async showData(): Promise<void> {
         this.forecastRepository.abortAllRequests();
         let cities: City[];
@@ -128,7 +116,7 @@ class CityTable extends CompositeComponent {
             this.addSubcomponent(new CityTableRow(this.forecastRepository));
         }
         this.removeSubcomponentAfterIndex(cities.length);
-
+        
         const updateCityRowPromises = cities.map(async (city, index) => {
             let tableRow = this.subcomponents[index] as CityTableRow;
             tableRow.setCityData(city);
@@ -137,19 +125,6 @@ class CityTable extends CompositeComponent {
         await Promise.all(updateCityRowPromises);
     }
     
-    protected addSubcomponent(component: Component): void {
-        super.addSubcomponent(component);
-        this.tableBody.append(component.getElement());
-    }
-
-    private removeSubcomponentAfterIndex(index: number): void {
-        if (index >= this.tableBody.children.length) return;
-        this.subcomponents = this.subcomponents.slice(0, index);
-        while (index < this.tableBody.children.length) {
-            this.tableBody.removeChild(this.tableBody.children[index]);
-        }
-    }
-
     public setPage(page: number): void {
         this.params.page = String(page);
     }
@@ -161,7 +136,31 @@ class CityTable extends CompositeComponent {
     public setState(state: string): void {
         this.params.state = (state === null) ? "" : state;
     }
+
     
+    
+    protected addSubcomponent(component: Component): void {
+        super.addSubcomponent(component);
+        this.tableBody.append(component.getElement());
+    }
+    
+    private removeSubcomponentAfterIndex(index: number): void {
+        if (index >= this.tableBody.children.length) return;
+        this.subcomponents = this.subcomponents.slice(0, index);
+        while (index < this.tableBody.children.length) {
+            this.tableBody.removeChild(this.tableBody.children[index]);
+        }
+    }
+    
+    private createTableElement(): void {
+        this.element = getElementById("city-table-container");
+        this.tableBody = getElementById("city-table-body");
+        const headerRow = getElementById("city-table-headers");
+        
+        CITY_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
+        WEATHER_HEADERS.forEach(h => appendNewElement(headerRow, ["td", undefined, h.header]));
+    }
+
 }
 
 

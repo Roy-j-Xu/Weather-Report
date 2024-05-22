@@ -12,6 +12,12 @@ function appendNewElement(target: HTMLElement, element: [string, string?, string
     return newChild;
 }
 
+function getElementById(id: string): HTMLElement {
+    const element = document.getElementById(id);
+    if (element !== null) return element;
+    throw new Error("Id ${id} not found in html file.");
+}
+
 function setUrlParam(param: string, value: string | number): void {
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set(param, String(value));
@@ -19,4 +25,4 @@ function setUrlParam(param: string, value: string | number): void {
 }
 
 
-export { newElement, appendNewElement, setUrlParam };
+export { newElement, appendNewElement, getElementById, setUrlParam };

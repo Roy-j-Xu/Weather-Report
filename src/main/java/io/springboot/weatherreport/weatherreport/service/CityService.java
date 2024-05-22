@@ -52,6 +52,7 @@ public class CityService {
     }
 
     public List<String> getCitySuggestions(String input) {
+        if (input == null) return List.of();
 //        if (repository.checkIfCityExist(input)) return List.of(input);
         return repository.findSimilarCityNames(input);
     }

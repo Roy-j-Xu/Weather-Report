@@ -1,4 +1,4 @@
-import { appendNewElement, newElement } from "../../utils/commons";
+import { appendNewElement, getElementById, newElement } from "../../utils/commons";
 import { Component } from "../patterns";
 import { CityTable } from "./city_table";
 import { CityRepository } from "../../data/repositories";
@@ -22,22 +22,17 @@ class CitySearchBar extends Component {
         super();
         this.cityRepository = cityRepository;
         this.cityTable = table;
-        this.createSearchBarElement();
+
+        this.element = getElementById("city-search-bar");
+        this.inputElement = getElementById("city-search-input");
+        this.suggestionList = getElementById("city-search-suggestions");
+        this.createStateSelector();
+        this.createInputElement();
     }
     
-    private createSearchBarElement(): void {
-        this.element = newElement("div", "container search-bar");
-        let searchBarRow = appendNewElement(this.element, ["div", "form-group row"]);
-        this.createStateSelector(searchBarRow);
-        this.createInputElement(searchBarRow);
-    }
+    private createStateSelector(): void {
+        const selector = getElementById("city-search-selector");
 
-    private createStateSelector(row: HTMLElement): void {
-        const div = appendNewElement(row, ["div", "col-sm-3"])
-        const selector = appendNewElement(div, ["select", "form-control"])
-
-        const defaultOption = appendNewElement(selector, ["option", undefined, "Select state"]);
-        defaultOption.setAttribute("value", "");
         Object.entries(stateNames).forEach(([key, value]) => {
             const option = appendNewElement(selector, ["option", undefined, key]);
             option.setAttribute("value", value);
@@ -49,20 +44,18 @@ class CitySearchBar extends Component {
         });
     }
 
-    private createInputElement(row: HTMLElement): void {
-        const div = appendNewElement(row, ["div", "col-sm-5"]);
-        this.inputElement = appendNewElement(div, ["input", "form-control dropdown"]);
-        this.suggestionList = appendNewElement(div, ["datalist"]);
+    private createInputElement(): void {
+        this.inputElement.addEventListener("input", () => {
+            this.updateSuggestionList();
+            this.showSuggestionList();
+        });
+        this.inputElement.addEventListener("focus", () => this.showSuggestionList());
+        document.addEventListener("click", (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest("city-search-suggestions")) this.hideSuggestionList();
+        });
 
-        this.inputElement.setAttribute("type", "text");
-        this.inputElement.setAttribute("placeholder", "Enter city");
-        this.inputElement.setAttribute("list", "city-suggestion-list");
-        this.inputElement.addEventListener("keyup", () => this.updateSuggestionList());
-
-        this.suggestionList.setAttribute("id", "city-suggestion-list");
-
-        const searchBtn = appendNewElement(row, ["button", "btn btn-primary col-sm-1", "Search"]);
-        searchBtn.setAttribute("type", "button");
+        const searchBtn = getElementById("city-search-btn");
         searchBtn.addEventListener("click", () => {
             this.cityTable.setName(this.getInputValue());
             this.cityTable.setState(this.state);
@@ -71,15 +64,30 @@ class CitySearchBar extends Component {
     }
 
     private async updateSuggestionList(): Promise<void> {
-        this.suggestionList.innerHTML = "";
         const suggestions = await this.cityRepository.getSuggestions(this.getInputValue());
-        console.log(suggestions);
-        suggestions.forEach(s => appendNewElement(this.suggestionList, ["option", undefined, s]));
+
+        this.suggestionList.innerHTML = "";
+        suggestions.forEach(s => {
+            const option = appendNewElement(this.suggestionList, ["div", "suggestion-row", s]);
+            option.addEventListener("click", () => {
+                (this.inputElement as HTMLInputElement).value = s;
+                this.hideSuggestionList();
+            });
+        });
     }
 
     private getInputValue(): string {
         return (this.inputElement as HTMLInputElement).value;
     }
+
+    private showSuggestionList(): void {
+        this.suggestionList.style.display = "block";
+    }
+
+    private hideSuggestionList(): void {
+        this.suggestionList.style.display = "none";
+    }
+
 
 }
 
@@ -101,7 +109,7 @@ class CityPageButtons extends Component {
     }
 
     private createPageButtonElement(): void {
-        this.element = newElement("div", "container");
+        this.element = getElementById("city-page-btns");
         for (let i = 0; i < 6; i++) {
             this.pageButtons[i] = newElement("button", "btn btn-light", `${i}`);
         }

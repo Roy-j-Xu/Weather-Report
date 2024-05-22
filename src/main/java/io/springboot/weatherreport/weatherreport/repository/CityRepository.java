@@ -30,7 +30,7 @@ public interface CityRepository extends JpaRepository<City, Integer> {
             "SELECT city FROM " +
             "(" +
                 "SELECT DISTINCT city FROM cities " +
-                "WHERE levenshtein(city, :input) < 4" +
+                "WHERE levenshtein(city, :input) < 5" +
             ") " +
             "ORDER BY levenshtein(city, :input) " +
             "LIMIT 5"

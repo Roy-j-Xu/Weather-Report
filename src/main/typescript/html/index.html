@@ -11,6 +11,40 @@
 <body>
     <h1>Weather Report</h1>
 
+    <!------- City table component ------->
+    <!-- Search bar -->
+    <div class="container search-bar" id="city-search-bar">
+        <div class="form-group row">
+            <div class="col-sm-3"><select class="form-control" id="city-search-selector">
+                <option value="">Select state</option>
+            </select></div>
+
+            <div class="col-sm-5">
+                <input type="text" class="form-control" id="city-search-input" placeholder="Enter city" autocomplete="off">
+                <div class="suggestions" id="city-search-suggestions">
+                    <!-- Suggestion rows -->
+                </div>
+            </div>
+
+            <div class="col-sm-1"><button class="btn btn-primary" type="button" id="city-search-btn">Search</button></div>
+        </div>
+    </div>
+    <!-- Search bar -->
+
+    <!-- City table -->
+    <div class="container" id="city-table-container">
+        <table class="table">
+            <thead><tr id="city-table-headers"></tr></thead>
+            <tbody id="city-table-body"></tbody>
+        </table>
+    </div>
+    <!-- City table -->
+
+    <!-- Page buttons -->
+    <div class="container" id="city-page-btns"></div>
+    <!-- Page buttons -->
+    <!------- City table component ------->
+
     <script type="module" src="../ts/index.ts"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
