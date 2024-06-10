@@ -32,11 +32,6 @@ public class CityService {
         return repository.findById(id)
                 .orElseThrow(() -> new CityNotFoundException(id));
     }
-//
-//    public float[] getCityCoordById(int id) throws CityNotFoundException {
-//        City city = getCityById(id);
-//        return new float[]{city.getLat(), city.getLng()};
-//    }
 
     public List<City> searchCity(String name, String stateId, int pageNumber) {
         if (name == null && stateId == null) {
