@@ -6,6 +6,7 @@ import io.springboot.weatherreport.weatherreport.service.UserDetailsServiceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -29,6 +30,8 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
     @Autowired
+    @Lazy
+    // lazy loading to avoid circular dependency
     private JwtAuthenticationFilter jwtAuthenticationFilter;
     @Autowired
     private UserRepository userRepository;
@@ -48,8 +51,7 @@ public class SecurityConfig {
             .sessionManagement(session -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
-            // TODO: Find an appropriate provider
-            .authenticationProvider(null)
+            .authenticationProvider(daoAuthenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
