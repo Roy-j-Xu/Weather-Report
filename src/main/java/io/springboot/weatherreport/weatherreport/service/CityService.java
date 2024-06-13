@@ -30,7 +30,7 @@ public class CityService {
 
     public City getCityById(int id) throws CityNotFoundException {
         return repository.findById(id)
-                .orElseThrow(() -> new CityNotFoundException(id));
+                .orElseThrow(() -> new CityNotFoundException("City id" + id + "not found."));
     }
 
     public List<City> searchCity(String name, String stateId, int pageNumber) {

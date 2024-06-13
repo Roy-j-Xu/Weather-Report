@@ -16,12 +16,16 @@ public class JwtServiceTest {
     private final long expiredTime = 100000000;
     private final JwtService jwtService = new JwtService(secretKey, expiredTime);
 
+    private final UserDetails testUserDetails = User.builder()
+            .username("username")
+            .password("1234567")
+            .authorities(List.of(new SimpleGrantedAuthority("USER")))
+            .build();
+
     @Test
-    public void JwtService_generateTokenTest() {
-        UserDetails userDetail = new User("user_name", "1234567", List.of(new SimpleGrantedAuthority("USER")));
-        String token = jwtService.generateToken(userDetail);
-        System.out.println(token);
-        Assertions.assertEquals("user_name", jwtService.extractUsername(token), "");
+    public void JwtService_ExtractUsername_ExtractRightUsername() {
+        String token = jwtService.generateToken(testUserDetails);
+        Assertions.assertEquals("username", jwtService.extractUsername(token));
     }
 
 }
