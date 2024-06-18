@@ -1,7 +1,7 @@
 package io.springboot.weatherreport.weatherreport.service;
 
-import io.springboot.weatherreport.weatherreport.dto.UserLoginDto;
-import io.springboot.weatherreport.weatherreport.dto.UserRegisterDto;
+import io.springboot.weatherreport.weatherreport.dto.LoginUserDto;
+import io.springboot.weatherreport.weatherreport.dto.RegisterUserDto;
 import io.springboot.weatherreport.weatherreport.entity.User;
 import io.springboot.weatherreport.weatherreport.exception.UserAlreadyExistsException;
 import io.springboot.weatherreport.weatherreport.repository.UserRepository;
@@ -43,7 +43,7 @@ public class AuthenticationServiceTest {
             .email(email)
             .password(encodedPassword)
             .build();
-    private final UserRegisterDto registerInput = UserRegisterDto.builder()
+    private final RegisterUserDto registerInput = RegisterUserDto.builder()
             .username(username)
             .email(email)
             .password(password)
@@ -70,7 +70,7 @@ public class AuthenticationServiceTest {
 
     @Test
     public void authenticate_ReturnCorrectUser_WhenUsersInputIsCorrect() {
-        UserLoginDto correctLoginInput = UserLoginDto.builder()
+        LoginUserDto correctLoginInput = LoginUserDto.builder()
                 .username(username)
                 .password(password)
                 .build();

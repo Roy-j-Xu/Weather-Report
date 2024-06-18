@@ -1,7 +1,7 @@
 package io.springboot.weatherreport.weatherreport.service;
 
-import io.springboot.weatherreport.weatherreport.dto.UserLoginDto;
-import io.springboot.weatherreport.weatherreport.dto.UserRegisterDto;
+import io.springboot.weatherreport.weatherreport.dto.LoginUserDto;
+import io.springboot.weatherreport.weatherreport.dto.RegisterUserDto;
 import io.springboot.weatherreport.weatherreport.entity.User;
 import io.springboot.weatherreport.weatherreport.exception.UserAlreadyExistsException;
 import io.springboot.weatherreport.weatherreport.repository.UserRepository;
@@ -30,7 +30,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User signUp(UserRegisterDto input) throws UserAlreadyExistsException {
+    public User signUp(RegisterUserDto input) throws UserAlreadyExistsException {
         String username = input.getUsername();
         userRepository.findByUsername(username).ifPresent(user -> {
             throw new UserAlreadyExistsException("User" + user.getUsername() + "already exists");
@@ -45,7 +45,7 @@ public class AuthenticationService {
         return user;
     }
 
-    public User authenticate(UserLoginDto input) throws AuthenticationException {
+    public User authenticate(LoginUserDto input) throws AuthenticationException {
         authenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getUsername(),
