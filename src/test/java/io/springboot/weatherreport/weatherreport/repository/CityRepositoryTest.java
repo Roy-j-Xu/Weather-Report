@@ -41,7 +41,7 @@ public class CityRepositoryTest {
     }
 
     @Test
-    public void CityRepository_FindById_FindCorrectCity() {
+    public void findById_ReturnCorrectCity() {
         Optional<City> city = cityRepository.findById(2);
 
         Assertions.assertTrue(city.isPresent());
@@ -49,13 +49,13 @@ public class CityRepositoryTest {
     }
 
     @Test
-    public void CityRepository_FindAll_ReturnAll() {
+    public void findAll_ReturnAllCities() {
         List<City> cities = cityRepository.findAll();
         Assertions.assertEquals(8, cities.size());
     }
 
     @Test
-    public void CityRepository_FindByStateId_FindCorrectCities() {
+    public void findByStateId_returnCorrectCities() {
         List<City> citiesIn = cityRepository.findByStateId("IN");
         List<City> citiesNy = cityRepository.findByStateId("NY");
         List<City> citiesCa = cityRepository.findByStateId("CA");
@@ -66,13 +66,13 @@ public class CityRepositoryTest {
     }
 
     @Test
-    public void CityRepository_FindByCity_FindCorrectCities() {
+    public void findByCity_returnCorrectCities() {
         List<City> twinLakes = cityRepository.findByCity("Twin Lakes");
         Assertions.assertEquals(3, twinLakes.size());
     }
 
     @Test
-    public void CityRepository_FindByCityAndStateId_FindCorrectCities() {
+    public void findByCityAndStateId_returnCorrectCities() {
         List<City> twinLakesMn = cityRepository.findByCityAndStateId("Twin Lakes", "MN");
         List<City> twinLakesCa = cityRepository.findByCityAndStateId("Twin Lakes", "CA");
 

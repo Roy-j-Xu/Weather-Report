@@ -8,11 +8,10 @@ import io.springboot.weatherreport.weatherreport.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.naming.AuthenticationException;
 
 @Service
 public class AuthenticationService {
@@ -31,7 +30,7 @@ public class AuthenticationService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public User signup(UserRegisterDto input) throws UserAlreadyExistsException {
+    public User signUp(UserRegisterDto input) throws UserAlreadyExistsException {
         String username = input.getUsername();
         userRepository.findByUsername(username).ifPresent(user -> {
             throw new UserAlreadyExistsException("User" + user.getUsername() + "already exists");
@@ -39,14 +38,14 @@ public class AuthenticationService {
 
         User user = User.builder()
                 .username(username)
-                .password(input.getPassword())
-                .email( passwordEncoder.encode(input.getEmail()) )
+                .email(input.getEmail())
+                .password( passwordEncoder.encode(input.getPassword()) )
                 .build();
         userRepository.save(user);
         return user;
     }
 
-    public User authenticate(UserLoginDto input) {
+    public User authenticate(UserLoginDto input) throws AuthenticationException {
         authenticationProvider.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getUsername(),

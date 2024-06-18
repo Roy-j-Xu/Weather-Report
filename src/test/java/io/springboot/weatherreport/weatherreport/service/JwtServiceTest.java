@@ -23,7 +23,7 @@ public class JwtServiceTest {
             .build();
 
     @Test
-    public void JwtService_ExtractUsername_ExtractRightUsername() {
+    public void extractUsername_ReturnCorrectUsername() {
         String token = jwtService.generateToken(testUserDetails);
         Assertions.assertEquals("username", jwtService.extractUsername(token));
     }
