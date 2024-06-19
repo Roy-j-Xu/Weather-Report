@@ -6,7 +6,9 @@ import io.springboot.weatherreport.weatherreport.entity.User;
 import io.springboot.weatherreport.weatherreport.exception.UserAlreadyExistsException;
 import io.springboot.weatherreport.weatherreport.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,17 +18,17 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
-    private final AuthenticationProvider authenticationProvider;
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationService(
             UserRepository userRepository,
-            AuthenticationProvider authenticationProvider,
+            AuthenticationManager authenticationManager,
             PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
-        this.authenticationProvider = authenticationProvider;
+        this.authenticationManager = authenticationManager;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -45,8 +47,8 @@ public class AuthenticationService {
         return user;
     }
 
-    public User authenticate(LoginUserDto input) throws AuthenticationException {
-        authenticationProvider.authenticate(
+    public User authenticate(LoginUserDto input) throws BadCredentialsException {
+        authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         input.getUsername(),
                         input.getPassword()

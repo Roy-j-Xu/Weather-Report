@@ -81,7 +81,7 @@ public class JwtService {
 
     public Optional<String> extractJwtFromRequest(HttpServletRequest request) {
         final String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("bearer")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer")) {
             return Optional.empty();
         }
         return Optional.of(authHeader.substring(7));
