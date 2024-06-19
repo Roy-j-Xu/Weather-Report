@@ -41,6 +41,6 @@ public interface CityRepository extends JpaRepository<City, Integer> {
     @Query(value =
             "SELECT EXIST (SELECT 1 FROM cities WHERE city = :input) LIMIT 1",
             nativeQuery = true)
-    boolean checkIfCityExist(@Param("input") String input);
+    boolean existsByCity(@Param("input") String input);
 
 }
