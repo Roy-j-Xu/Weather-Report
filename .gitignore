@@ -39,3 +39,6 @@ build/
 ### JavaScript ###
 /node_modules/
 .parcel-cache
+
+### Documentation ###
+**/*.drawio*

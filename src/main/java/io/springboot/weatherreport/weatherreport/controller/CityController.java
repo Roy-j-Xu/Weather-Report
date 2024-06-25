@@ -36,7 +36,7 @@ public class CityController {
     }
 
     @GetMapping("/{idString}")
-    public City getCityByFullData(@PathVariable String idString) throws CityNotFoundException {
+    public City getCityById(@PathVariable String idString) throws CityNotFoundException {
         int id = Integer.parseInt(idString);
         return cityService.getCityById(id);
     }
