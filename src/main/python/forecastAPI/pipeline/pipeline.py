@@ -67,7 +67,9 @@ def forecast_pipeline(json: dict) -> pd.DataFrame:
         'relativeHumidity.unitCode',
         'icon'
         ],
-        inplace=True)
+        inplace=True,
+        errors="ignore"
+        )
 
     df.rename(columns={
         'dewpoint.value': 'dewpoint',

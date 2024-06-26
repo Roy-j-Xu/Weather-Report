@@ -6,7 +6,55 @@ Weather Report is an API-driven web application that provides weather forecast d
 
 ## Usage
 
-*To be completed*
+Clone this repo and change to the project directory.
+
+```bash
+git clone https://github.com/Roy-j-Xu/Weather-Report.git
+```
+
+Set up developing environment.
+
+```bash
+./script.sh setup
+```
+
+To run the entire backend, run
+
+```bash
+./script.sh run
+```
+
+Or start each component individually:
+
+```bash
+# start main API
+./mvnw spring-boot:run
+
+# start ForecastAPI
+venv/bin/activate
+flask --app 'src\main\python\forecastAPI\app' run
+```
+
+The frontend is still under development, and can be started up by entering the command
+
+````bash
+npm run start
+````
+
+## Screenshots
+
+![mainPage](docs/screenshots/main_page.png)
+
+<center>Weather data loading asynchronously</center>
+
+![mainPageSearching](docs/screenshots/main_page_searching.png)
+
+<center>Searching and error handling
+</center>
+
+![mainPageAutocomplete](docs/screenshots/main_page_autocomplete.png)
+
+<center>Autocomplete</center>
 
 ## Documentation
 
