@@ -30,28 +30,25 @@ public class UserService {
         this.likeRepository = likeRepository;
     }
 
-    public void likeCity(long userId, int cityId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public void likeCity(String username, int cityId) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
         Optional<City> cityOptional = cityRepository.findById(cityId);
         userOptional.orElseThrow(() ->
-                new UserNotFoundException("User id " + userId + " does not exist")
+                new UserNotFoundException("User " + username + " does not exist")
         );
         cityOptional.orElseThrow(() ->
                 new CityNotFoundException("City id " + cityId + " does not exist.")
         );
 
         likeRepository.save(
-                Like.builder()
-                        .user(userOptional.get())
-                        .city(cityOptional.get())
-                        .build()
+                new Like(userOptional.get(), cityOptional.get())
         );
     }
 
-    public List<City> getLikedCitiesByUserId(long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public List<City> getLikedCitiesByUsername(String username) {
+        Optional<User> userOptional = userRepository.findByUsername(username);
         userOptional.orElseThrow(() ->
-                new UserNotFoundException("User id " + userId + " does not exist")
+                new UserNotFoundException("User " + username + " does not exist")
         );
         return userOptional
                 .get()

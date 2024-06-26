@@ -1,9 +1,11 @@
 package io.springboot.weatherreport.weatherreport.controller;
 
+import io.springboot.weatherreport.weatherreport.entity.City;
 import io.springboot.weatherreport.weatherreport.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -16,14 +18,18 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/like/{userIdStr},{cityIdStr}")
+    @PostMapping("/like/{username},{cityIdStr}")
     public String likeCity(
-            @PathVariable String userIdStr,
+            @PathVariable String username,
             @PathVariable String cityIdStr
     ) {
-        long userId = Long.parseLong(userIdStr);
         int cityId = Integer.parseInt(cityIdStr);
-        userService.likeCity(userId, cityId);
+        userService.likeCity(username, cityId);
         return "Request successful.";
+    }
+
+    @GetMapping("like/{username}")
+    public List<City> getLikedCitiesByUsername(@PathVariable String username) {
+        return userService.getLikedCitiesByUsername(username);
     }
 }
