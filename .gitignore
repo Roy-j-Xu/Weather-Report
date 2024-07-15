@@ -37,7 +37,7 @@ build/
 **/__pycache__/
 
 ### JavaScript ###
-/node_modules/
+**/node_modules/
 .parcel-cache
 
 ### Documentation ###
