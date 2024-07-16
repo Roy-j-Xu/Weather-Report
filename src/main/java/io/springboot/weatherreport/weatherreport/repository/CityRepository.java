@@ -16,15 +16,21 @@ public interface CityRepository extends JpaRepository<City, Integer> {
 
     Optional<City> findById(int id);
 
-    List<City> findByCity(String City);
+    List<City> findByCity(String city);
 
-    List<City> findByCity(String City, Pageable pageable);
+    long countByCity(String city);
+
+    List<City> findByCity(String city, Pageable pageable);
 
     List<City> findByStateId(String stateId);
+
+    long countByStateId(String stateId);
 
     List<City> findByStateId(String stateId, Pageable pageable);
 
     List<City> findByCityAndStateId(String city, String stateId);
+
+    long countByCityAndStateId(String city, String stateId);
 
     @Query(value =
             "SELECT city FROM " +

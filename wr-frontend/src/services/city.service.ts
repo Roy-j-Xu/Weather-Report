@@ -1,5 +1,5 @@
 import { CITY_API_ENDPOINTS } from "../constants/api";
-import City from "../types/city";
+import City from "../types/city.type";
 
 class CityService {
 
@@ -10,6 +10,14 @@ class CityService {
     ): Promise<City[]> {
         const response = await fetch(CITY_API_ENDPOINTS.SEARCH(name, state, page));
         return await response.json() as City[];
+    }
+    
+    public async searchCount(
+        name: string,
+        state: string
+    ): Promise<number> {
+        const response = await fetch(CITY_API_ENDPOINTS.SEARCH_COUNT(name, state));
+        return await response.json() as number;
     }
 
     public async getCityById(cityId: number): Promise<City> {

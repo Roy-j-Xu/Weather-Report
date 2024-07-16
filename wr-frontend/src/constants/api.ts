@@ -1,7 +1,9 @@
 const CITY_API = "http://localhost:8080/api/cities";
 const CITY_API_ENDPOINTS = {
     SEARCH: (name: string, state: string, page: number) =>
-                `${CITY_API}/?${name},${state},${page}`,
+                `${CITY_API}?name=${name}&state=${state}&page=${page}`,
+    SEARCH_COUNT: (name: string, state: string) =>
+                `${CITY_API}/search-count?name=${name}&state=${state}`,
     GET_CITY_BY_ID: (cityId: number) => `${CITY_API}/${cityId}`,
     GET_SUGGESTIONS: (input: string) => `${CITY_API}/suggestions/${input}`
 };

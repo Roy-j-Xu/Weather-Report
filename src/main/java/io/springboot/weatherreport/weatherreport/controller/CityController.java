@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cities")
-@CrossOrigin(origins = "http://localhost:1234")
+@CrossOrigin(origins = "http://localhost:5173")
 public class CityController {
 
     private final CityService cityService;
@@ -33,6 +33,19 @@ public class CityController {
             cityName = cityNameWithUnderscore.replace("_", " ");
         }
         return cityService.searchCity(cityName, stateId, pageNumber);
+    }
+
+    @GetMapping("/search-count")
+    public long getSearchResultCount(
+            @RequestParam(value = "name",  required = false) String cityNameWithUnderscore,
+            @RequestParam(value = "state", required = false) String stateId,
+            @RequestParam(value = "page", defaultValue = "0") int pageNumber
+    ) {
+        String cityName = null;
+        if (cityNameWithUnderscore != null) {
+            cityName = cityNameWithUnderscore.replace("_", " ");
+        }
+        return cityService.countSearchResult(cityName, stateId);
     }
 
     @GetMapping("/{idString}")
