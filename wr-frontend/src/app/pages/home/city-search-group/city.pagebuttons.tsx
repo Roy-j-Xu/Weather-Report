@@ -1,3 +1,6 @@
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+
 interface Props {
     page: number;
     totalPage: number;
@@ -6,10 +9,10 @@ interface Props {
 
 function CityPageButtons({ page, totalPage, onClick }: Props) {
     let firstButton = (
-        <button className="page-btn" onClick={onClick("first")}>First page</button>
+        <Button className="page-btn" onClick={onClick("first")}>First page</Button>
     );
     let lastButton = (
-        <button className="page-btn" onClick={onClick("last")}>Last page</button>
+        <Button className="page-btn" onClick={onClick("last")}>Last page</Button>
     );
     let middleButtons: JSX.Element;
 
@@ -21,7 +24,7 @@ function CityPageButtons({ page, totalPage, onClick }: Props) {
         let list = range(1, totalPage);
         middleButtons = (<>
             {list.map(i => (
-                <button className={getBtnClass(i)} key={i} onClick={onClick(i)}>{i}</button>
+                <Button className={getBtnClass(i)} key={i} onClick={onClick(i)}>{i}</Button>
             ))}
         </>)
     } else {
@@ -30,7 +33,7 @@ function CityPageButtons({ page, totalPage, onClick }: Props) {
             <>
             {page - 3 > 1 && <label>...</label>}
             {list.map(i => (
-                <button className={getBtnClass(i)} key={i} onClick={onClick(i)}>{i}</button>
+                <Button className={getBtnClass(i)} key={i} onClick={onClick(i)}>{i}</Button>
             ))}
             {page + 3 < totalPage && <label>...</label>}
             </>
@@ -38,11 +41,11 @@ function CityPageButtons({ page, totalPage, onClick }: Props) {
     }
 
     return (
-        <div>
+        <Stack direction="row" spacing={2} justifyContent="center" className="page-btns">
             {firstButton}
             {middleButtons}
             {lastButton}
-        </div>
+        </Stack>
     )
 }
 

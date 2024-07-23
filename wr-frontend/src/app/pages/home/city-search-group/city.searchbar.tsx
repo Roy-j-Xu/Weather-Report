@@ -1,6 +1,9 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import stateObject from "../../../../assets/states.json"
 import { useCityService } from "./city.service.provider";
+import TextField from '@mui/material/TextField';
+import MenuItem from '@mui/material/MenuItem';
+import { Stack } from "@mui/material";
 
 const STATE_LIST = Object.entries(stateObject);
 
@@ -14,8 +17,8 @@ function CitySearchbar({ search }: CitySearchbarProps) {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const [suggestions, setSuggestions] = useState<string[]>([]);
 
-    const stateSelectorRef = useRef<HTMLSelectElement>(null);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const stateSelectorRef = useRef<HTMLDivElement>(null);
+    const inputRef = useRef<HTMLDivElement>(null);
     const suggestionRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -25,20 +28,18 @@ function CitySearchbar({ search }: CitySearchbarProps) {
             setSuggestions(suggestions);
         }
 
-        const inputElem = inputRef.current;
-        const suggestionElem = suggestionRef.current;
-        if (!inputElem) throw new Error("Input reference is null.");
-        if (!suggestionElem) throw new Error("Suggestion reference is null.");
+        const inputElem = refCurrent(inputRef);
+        const suggestionElem = refCurrent(suggestionRef);
 
         inputElem.addEventListener(
             "input",
-            () => showSuggestionsFor(inputElem.value)
+            () => showSuggestionsFor(valueOfTextFieldRef(inputRef))
         );
 
         document.addEventListener("mousedown", (event: MouseEvent) => {
             const clickedNode = event.target as Node;
             if (inputElem.contains(clickedNode)) {
-                showSuggestionsFor(inputElem.value);
+                showSuggestionsFor(valueOfTextFieldRef(inputRef));
             }
             else if (!suggestionElem.contains(clickedNode)) {
                 setShowSuggestions(false);
@@ -48,35 +49,45 @@ function CitySearchbar({ search }: CitySearchbarProps) {
     }, []);
 
     const handleSearch = () => {
-        if (!stateSelectorRef.current) return;
         if (!inputRef.current) return;
-        search(inputRef.current.value, stateSelectorRef.current.value);
+        search(valueOfTextFieldRef(inputRef), valueOfTextFieldRef(stateSelectorRef));
     };
     
     return (
-        <div className="form-group row">
+        <Stack direction="row" spacing={2} justifyContent="center">
 
-            <div className="col-sm-3">
-                <select ref={stateSelectorRef}>
-                <option value={""}></option>
-                {STATE_LIST.map(([state, stateId]) => (
-                    <option key={state} value={stateId}>{state}</option>
+            <div>
+                <TextField 
+                    ref={stateSelectorRef}
+                    id="state-selector"
+                    select
+                    label="Select state"
+                    defaultValue=""
+                >
+                    <MenuItem value="">-</MenuItem>
+                    {STATE_LIST.map(([state, stateId]) => (
+                        <MenuItem key={state} value={stateId}>{state}</MenuItem>
                 ))}
-                </select>
+                </TextField>
             </div>
 
-            <div className="col-sm-5">
-                <input type="text" placeholder="Search city" ref={inputRef}></input>
+            <div>
+                <TextField
+                    ref={inputRef}
+                    id="city-search-input"
+                    placeholder="Search city"
+                />
+
                 <SuggestionList show={showSuggestions} 
                                 suggestions={suggestions}
                                 ref={suggestionRef}/>
             </div>
 
-            <div className="col-sm-1">
+            <div>
                 <button onClick={handleSearch}>Search</button>
             </div>
 
-        </div>
+        </Stack>
     );
 }
 
@@ -92,7 +103,6 @@ const SuggestionList = forwardRef(
         ref: React.ForwardedRef<HTMLDivElement>
     ) {
         const isVisible = show && suggestions;
-        console.log(isVisible);
         return (
             <div className="suggestions" ref={ref}
                 style={{display: isVisible ? "block" : "none"}}>
@@ -105,6 +115,18 @@ const SuggestionList = forwardRef(
         );
     }
 )
+
+function refCurrent(ref: React.RefObject<HTMLElement>): HTMLElement {
+    if (!ref.current) throw new Error(`Reference ${ref} is null.`);
+    return ref.current;
+}
+
+function valueOfTextFieldRef(ref: React.RefObject<HTMLDivElement>): string {
+    const current = refCurrent(ref);
+    const input = current.querySelector("input");
+    if (!input) throw new Error(`Ref ${ref} is not a reference to TextField`);
+    return input.value;
+}
 
 
 export default CitySearchbar;
