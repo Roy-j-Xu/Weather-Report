@@ -7,14 +7,11 @@ import io.springboot.weatherreport.weatherreport.entity.User;
 import io.springboot.weatherreport.weatherreport.security.JwtService;
 import io.springboot.weatherreport.weatherreport.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AuthenticationController {
     private final JwtService jwtService;
 
@@ -27,23 +24,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterUserDto registerUserDto) {
-        User registeredUser = authenticationService.signUp(registerUserDto);
-
-        return ResponseEntity.ok(registeredUser);
+    public User register(@RequestBody RegisterUserDto registerUserDto) {
+        return authenticationService.signUp(registerUserDto);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+    public LoginResponse authenticate(@RequestBody LoginUserDto loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
-
         String jwtToken = jwtService.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = LoginResponse.builder()
+        return LoginResponse.builder()
                 .token(jwtToken)
                 .expireTime(jwtService.getExpirationTime())
                 .build();
-
-        return ResponseEntity.ok(loginResponse);
     }
 }

@@ -1,4 +1,4 @@
-interface City {
+export default interface City {
     id: number;
     city: string;
     stateId: string;
@@ -7,5 +7,3 @@ interface City {
     lng: number;
     timezone: string;
 }
-
-export default City;

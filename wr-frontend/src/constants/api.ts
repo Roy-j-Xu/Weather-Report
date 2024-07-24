@@ -17,8 +17,8 @@ const AUTH_API_ENDPOINTS = {
 
 const USER_API = "http://localhost:8080/api/users"
 const USER_API_ENDPOINTS = {
-    LIKE: (userId: number, cityId: number) => `${USER_API}/likes/${userId},${cityId}`,
-    GET_LIKES: (userId: number) => `${USER_API}/likes/${userId}`
+    LIKE: (userId: number, cityId: number) => `${USER_API}/like/${userId},${cityId}`,
+    GET_LIKES: (username: string) => `${USER_API}/like/${username}`
 };
 
 

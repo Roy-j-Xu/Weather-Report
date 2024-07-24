@@ -2,7 +2,7 @@ import { CITY_API_ENDPOINTS } from "../constants/api";
 import { CITIES_PER_PAGE } from "../constants/ui.constants";
 import City from "../types/city.type";
 
-class CityService {
+export default class CityService {
 
     public async searchCity(
         name: string,
@@ -40,5 +40,3 @@ class CityService {
     }
 
 }
-
-export default CityService;

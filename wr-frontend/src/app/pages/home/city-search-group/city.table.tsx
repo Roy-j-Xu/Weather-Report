@@ -13,7 +13,7 @@ interface CityTableProps {
 function CityTable({ cities }: CityTableProps) {
     return (
         <TableContainer>
-        <Table  sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table  sx={{ minWidth: 650 }} id="city-table">
         <TableHead>
             <TableRow>
                 <TableCell>Name</TableCell>

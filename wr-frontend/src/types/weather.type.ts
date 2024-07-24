@@ -1,4 +1,4 @@
-interface Weather {
+export default interface Weather {
     number: number;
     name: string;
     isDaytime: boolean;
@@ -14,5 +14,3 @@ interface Weather {
     date: string;
     time: string;
 }
-
-export default Weather;

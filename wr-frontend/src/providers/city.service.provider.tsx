@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import CityService from "../../../../services/city.service";
+import CityService from "../services/city.service";
 
 const CityServiceContext = createContext<CityService | null>(null);
 

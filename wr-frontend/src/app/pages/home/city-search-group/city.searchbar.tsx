@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from "react";
 import stateObject from "../../../../assets/states.json"
-import { useCityService } from "./city.service.provider";
+import { useCityService } from "../../../../providers/city.service.provider";
 import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 import { Stack } from "@mui/material";
